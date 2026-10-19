@@ -1,0 +1,268 @@
+{
+  "info": {
+    "name": "Campus Clubs CRUD API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET all clubs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns an array with at least 10 records', () => { const d = pm.response.json(); pm.expect(d).to.be.an('array'); pm.expect(d.length).to.be.at.least(10); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. GET one club",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has id 1 and a name', () => { const d = pm.response.json(); pm.expect(d.id).to.eql(1); pm.expect(d.name).to.be.a('string'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. POST create club",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mulungushi Quiz Club\",\n  \"category\": \"Academic\",\n  \"description\": \"Weekly general-knowledge quizzes and inter-hall competitions.\",\n  \"meeting_day\": \"Friday\",\n  \"venue\": \"Library Seminar Room\",\n  \"president_name\": \"Ruth Kasonde\",\n  \"contact_email\": \"quiz@example.com\",\n  \"member_count\": 12\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "const d = pm.response.json();",
+              "pm.test('Returns the new record with an id', () => pm.expect(d.id).to.be.a('number'));",
+              "pm.collectionVariables.set('newId', d.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. PUT update club",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs/{{newId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs",
+            "{{newId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mulungushi Quiz Club\",\n  \"category\": \"Academic\",\n  \"description\": \"Weekly quizzes, inter-hall competitions and a yearly quiz bowl.\",\n  \"meeting_day\": \"Thursday\",\n  \"venue\": \"Library Seminar Room\",\n  \"president_name\": \"Ruth Kasonde\",\n  \"contact_email\": \"quiz@example.com\",\n  \"member_count\": 25\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Fields were updated', () => { const d = pm.response.json(); pm.expect(d.member_count).to.eql(25); pm.expect(d.meeting_day).to.eql('Thursday'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. DELETE club",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs/{{newId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs",
+            "{{newId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Confirms deletion', () => pm.expect(pm.response.json().message).to.include('deleted'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extra: GET deleted club returns 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs/{{newId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs",
+            "{{newId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extra: POST without name returns 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/clubs",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clubs"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Other\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));",
+              "pm.test('Explains the problem', () => pm.expect(pm.response.json().details[0]).to.include('name'));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "newId",
+      "value": ""
+    }
+  ]
+}

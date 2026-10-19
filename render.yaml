@@ -1,0 +1,18 @@
+# Render Blueprint: free web service for the Campus Clubs API + frontend.
+# Root directory is backend so `npm start` runs server.js, which also serves ../frontend.
+services:
+  - type: web
+    name: campus-clubs-crud
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "24.18.0"
+      - key: DB_FILE
+        value: ./data/campus_clubs.db
+      - key: SEED_ON_START
+        value: "true"
